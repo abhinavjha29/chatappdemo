@@ -18,8 +18,8 @@ app.use('/user' , userroute) ;
     async ()=>{
         try {
          await sequelize.sync() 
-         app.listen(6000 , ()=>{
-            console.log("listening to port 6000")
+         app.listen(5000 , ()=>{
+            console.log("listening to port 5000")
          }) 
         }
         catch(err) {

@@ -1,5 +1,11 @@
-const user = require('../model/signupdetail') ;
+const User = require('../model/signupdetail') ;
+const sequelize = require('sequelize') ;
 const bcrypt = require('bcrypt') ;
+const jwt = require('jsonwebtoken') ;
+
+function generateaccesstoken(id) {
+    return jwt.sign({ userId : id} , 'Secretpassword12131')
+}
 
 const savedata = async(req , res , next)=>{
     try {
@@ -13,9 +19,10 @@ const savedata = async(req , res , next)=>{
         
              name ,
              email ,
+             phonenumber ,
              password : hash
          })
-         res.status(201).json({detail:data}) ;
+         res.status(201).json({detail:data , msg: "Succesfull Signup"}) ;
 
     })
     }
@@ -25,6 +32,47 @@ const savedata = async(req , res , next)=>{
     }
 }
 
+const logindata  = async(req , res , next)=>{ 
+    try {
+        const {phonenumber , password} = req.body ;
+        const reqdata = await User.findAll({where : {
+            
+                phonenumber : phonenumber
+            
+        }})
+        if(reqdata.length==0) {
+            return res.status(500).json({messege : "user not found"})
+        }
+        if(reqdata.length>0) {
+            bcrypt.compare( password , reqdata[0].password , (err , result)=>{
+            
+                if(err) {
+                    console.log(err) ;
+                    return res.status(500).json({messege : "something went wrong"})
+                }
+                if(result=== false)
+                {
+                    console.log(result) ;
+     
+                  return res.status(401).json({success :false, messege : "incorrect password"})
+                }
+                       else { 
+                        console.log("true") ;
+            return res.status(200).json({success : true , messege : "user logged succesfully" , token: generateaccesstoken(reqdata[0].id)})
+           }
+            })
+    
+
+        }
+    }
+    catch(err) {
+        console.log(err) ;
+        res.status(500).json({msg: "something went wrong"})
+    }
+
+}
+
 module.exports = {
-    savedata
+    savedata ,
+    logindata
 }
