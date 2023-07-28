@@ -19,7 +19,18 @@ return res.status(200).json({messege : "chat updated" , detail : chat_detail})
     }
 } 
 
+const getchats = async(req , res , next)=>{
+    try {
+const chats = await userchat.findAll() ;
+return res.status(200).json({chats})
+    }
+    catch(err) {
+        console.log(err) ;
+        return res.status(500)
+    }
+}
 
 module.exports = {
-    savechat
+    savechat ,
+    getchats
 }
