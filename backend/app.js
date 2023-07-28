@@ -4,6 +4,9 @@ const cors = require('cors') ;
 
 const userroute = require('./router/signuproute') ;
 const sequelize = require('./util/database');
+const chatroute = require('./router/chatroute') ;
+const chatmodel = require('./model/chatmodel') ;
+const usermodel = require('./model/signupdetail') ;
 
 
 const app = Express() ;
@@ -13,6 +16,9 @@ app.use(cors({
 })) ;
 
 app.use('/user' , userroute) ;
+app.use('/chat' , chatroute ) ;
+usermodel.hasMany(chatmodel) ;
+chatmodel.belongsTo(usermodel) ;
 
 (
     async ()=>{

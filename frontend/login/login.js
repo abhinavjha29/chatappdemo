@@ -4,26 +4,32 @@ loginbtn.addEventListener('click' , login) ;
 async function login(e) {
     try {
         e.preventDefault() ;
+        const name = document.getElementById('Name').value ;
         const phonenumber = document.getElementById('Phone').value ;
         const password = document.getElementById('password').value ;
         const logindetail = {
             phonenumber ,
-            password
+            password ,
         }
         const res = await axios.post('http://localhost:5000/user/login' , logindetail)
         if(res.status==200) {
-            console.log("success") ;
+        localStorage.setItem("name" , name)    
+        localStorage.setItem("token" , res.data.token)
             alert(res.data.messege)
+            window.location.href="http://127.0.0.1:5500/frontend/chatappui/index.html"
         }
-       // else throw new Error(res.data.messege);
-    else {
-        alert(res.data.messege) ;
+     else {
+        console.log(res.data.messege) ; 
+        throw new Error(res.data.messege);
+   
     }
     }
 
-    catch(Error) {
-        console.log(Error.messege) ;
-        alert("something went wrong")
+    catch(err) {
+       // console.log(err.messege) ;
+       console.log(err) ;
+        alert(err.response.data.messege)
+       // alert("something went wrong")
     }
     
 }
