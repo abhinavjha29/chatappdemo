@@ -1,4 +1,5 @@
 const token = localStorage.getItem('token') ;
+const name = localStorage.getItem('name') ;
 
 const sendbtn = document.getElementById('sendbtn') ;
 sendbtn.addEventListener('click' , sendmsg) ;
@@ -10,7 +11,7 @@ async function sendmsg(e) {
     e.preventDefault() ;
     console.log(1) ;
     const chat = document.getElementById('messageInp').value ;
-    const name = localStorage.getItem('name') ;
+    
     const chat_detail = {
         name , chat
     }
@@ -47,4 +48,22 @@ async function showchats(chatdetail) {
     messageElement.classList.add('message');
     messageElement.appendChild(document.createTextNode(`${chatdetail.name} : ${chatdetail.chat}`))
     messageContainer.append(messageElement);
+}
+
+const creategrpbtn = document.getElementById('creategrpbtn') ;
+creategrpbtn.addEventListener('click' , creategroup) ;
+
+async function creategroup(e) {
+try {
+e.preventDefault() ;
+const group_name = window.prompt("Please enter the group name:");
+const group_detail = {
+    group_name , name 
+}
+const resp = await axios.post('http://localhost:5000/group/create' , group_detail , {headers : {"Authorization" : token} }) ;
+console.log(resp) ;
+}
+catch(err) {
+    console.log(err) ;
+}
 }

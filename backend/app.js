@@ -7,8 +7,9 @@ const sequelize = require('./util/database');
 const chatroute = require('./router/chatroute') ;
 const chatmodel = require('./model/chatmodel') ;
 const usermodel = require('./model/signupdetail') ;
-
-
+const Groupuser = require('./model/groupuser') ;
+const Groups = require('./model/groupmodel');
+const grouproute = require('./router/grouprote') ;
 const app = Express() ;
 app.use(bodyparser.json()) ;
 app.use(cors({
@@ -17,8 +18,12 @@ app.use(cors({
 
 app.use('/user' , userroute) ;
 app.use('/chat' , chatroute ) ;
+app.use('/group' , grouproute) ;
 usermodel.hasMany(chatmodel) ;
 chatmodel.belongsTo(usermodel) ;
+Groups.belongsToMany(usermodel , {through : Groupuser , foreignKey: 'group_id'}) ;
+usermodel.belongsToMany(Groups , {through : Groupuser , foreignKey : 'id'}) ;
+
 
 (
     async ()=>{
