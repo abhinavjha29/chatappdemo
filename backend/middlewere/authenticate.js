@@ -7,7 +7,12 @@ const token = await req.header('Authorization') ;
 const user = jwt.verify(token , 'Secretpassword12131') ;
 
 const response =  await User.findByPk(user.userId) ;
-
+// const response = await User.findOne({
+//     where: {
+//         id: user.memberId
+//     }
+// });
+console.log(response) ;
 req.user = response ;
 
 next() ;

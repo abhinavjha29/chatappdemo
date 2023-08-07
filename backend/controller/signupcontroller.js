@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt') ;
 const jwt = require('jsonwebtoken') ;
 
 function generateaccesstoken(id) {
-    return jwt.sign({ userId : id} , 'Secretpassword12131')
+    return jwt.sign({ userId :id} , 'Secretpassword12131')
 }
 
 const savedata = async(req , res , next)=>{

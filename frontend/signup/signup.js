@@ -18,6 +18,7 @@ async function  submitdetail(e) {
         if(resp.status==201) {
 console.log(resp.data.msg) ;
 alert(resp.data.msg)
+window.location.href = 'http://127.0.0.1:5500/frontend/login/login.html' ;
         }
 else {
     console.log(err) ;

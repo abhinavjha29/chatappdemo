@@ -13,11 +13,14 @@ const Chat = sequelize.define('Chat' , {
     type : Sequelize.STRING ,
     allowNull : false 
    } ,
-   userId : {
-    type: Sequelize.INTEGER
-   } ,
+//    userId : {
+//     type: Sequelize.INTEGER
+//    } ,
    name : {
     type : Sequelize.STRING
+   }  ,
+   group_id : {
+    type : Sequelize.INTEGER
    }
 
 } , {

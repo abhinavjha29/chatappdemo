@@ -4,16 +4,16 @@ const name = localStorage.getItem('name') ;
 const sendbtn = document.getElementById('sendbtn') ;
 sendbtn.addEventListener('click' , sendmsg) ;
 
-window.addEventListener('DOMContentLoaded' , getchats) ;
+window.addEventListener('DOMContentLoaded' , getgroup) ;
 
 async function sendmsg(e) {
    try{
     e.preventDefault() ;
-    console.log(1) ;
+    const groupid = localStorage.getItem("groupid") ;
     const chat = document.getElementById('messageInp').value ;
     
     const chat_detail = {
-        name , chat
+        name , chat , groupid
     }
     const res = await axios.post('http://localhost:5000/chat/savechat' ,chat_detail , {headers : {"Authorization" : token} } )
 if (res.status==200) {
@@ -27,16 +27,24 @@ else throw new Error(res.data.messege)
     alert(err.response.data.messege) ;
    }
 }
-async function getchats() {
+async function getchats(e) {
 try {
-const response = await axios.get('http://localhost:5000/chat/getchat' , {headers : {"Authorization" : token} })
-console.log(response.data.chats)
-for(let i=0 ;i<response.data.chats.length; i++) {
-    showchats(response.data.chats[i]) ;
+    e.preventDefault()
+    console.log(e.target.id+"btn id is ") ;
+    localStorage.setItem("groupid",e.target.id) ;
+const response = await axios.get(`http://localhost:5000/chat/getchat/${e.target.id}` , {headers : {"Authorization" : token} })
+
+    for(let i=0 ;i<response.data.chats.length; i++) {
+        showchats(response.data.chats[i]) ;
+    
+    }
+   
+
+
 
 }
-}
 catch(err) {
+    alert(err.response.data.messege) ;
     console.log(err)
 }
 }
@@ -61,9 +69,45 @@ const group_detail = {
     group_name , name 
 }
 const resp = await axios.post('http://localhost:5000/group/create' , group_detail , {headers : {"Authorization" : token} }) ;
-console.log(resp) ;
+getgroup() ;
 }
 catch(err) {
     console.log(err) ;
 }
+}
+
+async function getgroup() {
+    try {
+        
+        const grpdetail = await axios.get('http://localhost:5000/group/getgroups' ,{headers : {"Authorization" : token} } ) 
+        console.log(grpdetail) ;
+        for(let i=0 ; i<grpdetail.data.groupdetail.length ; i++) {
+            showgroups(grpdetail.data.groupdetail[i]) ;
+        }
+        
+
+    }
+    catch(err) {
+        console.log(err) ;
+        alert(err.response.data.messege) ;
+    }
+   
+   
+
+}
+async function showgroups(grpdetail) {
+    const newbtn = document.createElement('button') ;
+ const groupelm  = document.getElementById('groupsno') ;
+ const grpdiv = document.createElement('div') ;
+ grpdiv.id = 'groupdiv'
+ grpdiv.className = 'container-fluid' ;
+ newbtn.appendChild(document.createTextNode(`${grpdetail.group_name}`)) ;
+ newbtn.id = grpdetail.group_id ;
+ console.log(newbtn) ;
+ console.log(groupelm) ;
+ groupelm.appendChild(newbtn) ;
+ 
+ //grpdiv.appendChild(groupelm) ;
+newbtn.addEventListener('click' ,getchats ) ;
+
 }

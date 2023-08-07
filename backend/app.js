@@ -7,28 +7,34 @@ const sequelize = require('./util/database');
 const chatroute = require('./router/chatroute') ;
 const chatmodel = require('./model/chatmodel') ;
 const usermodel = require('./model/signupdetail') ;
-const Groupuser = require('./model/groupuser') ;
+//const Groupuser = require('./model/groupuser') ;
 const Groups = require('./model/groupmodel');
 const grouproute = require('./router/grouprote') ;
+
 const app = Express() ;
 app.use(bodyparser.json()) ;
 app.use(cors({
     origin : '*'
 })) ;
+usermodel.hasMany(chatmodel) ;
+ chatmodel.belongsTo(usermodel) ;
+Groups.hasMany(chatmodel) ;
+ chatmodel.belongsTo(Groups) ;
+Groups.belongsToMany(usermodel , {through : 'Groupuser' , foreignKey: 'group_id'}) ;
+usermodel.belongsToMany(Groups , {through : 'Groupuser' , foreignKey : 'id'}) ;
 
 app.use('/user' , userroute) ;
 app.use('/chat' , chatroute ) ;
 app.use('/group' , grouproute) ;
-usermodel.hasMany(chatmodel) ;
-chatmodel.belongsTo(usermodel) ;
-Groups.belongsToMany(usermodel , {through : Groupuser , foreignKey: 'group_id'}) ;
-usermodel.belongsToMany(Groups , {through : Groupuser , foreignKey : 'id'}) ;
+
 
 
 (
     async ()=>{
         try {
-         await sequelize.sync() 
+         await sequelize.sync(
+            //{alter: true}
+            ) 
          app.listen(5000 , ()=>{
             console.log("listening to port 5000")
          }) 

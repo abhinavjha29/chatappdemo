@@ -1,7 +1,8 @@
 const Sequelize = require('sequelize') ;
 const sequelize = require('../util/database') ;
+const groupuser = require('./groupuser') ;
+const User = require('../model/signupdetail');
 
-const User  = require('./signupdetail') ;
 
 const Groups = sequelize.define('Groups', {
   
@@ -20,18 +21,15 @@ const Groups = sequelize.define('Groups', {
        } ,
        admin_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: User,
-          key: 'id',
-        },
-      }
+      
+      } 
 } , 
 {
     tableName : 'group_detail'
 }
 )
 
+// Groups.belongsToMany(User , {through : groupuser , foreignKey: 'group_id'}) ;
 
 
 module.exports = Groups ;
