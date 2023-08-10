@@ -22,10 +22,17 @@ Groups.hasMany(chatmodel) ;
  chatmodel.belongsTo(Groups) ;
 Groups.belongsToMany(usermodel , {through : 'Groupuser' , foreignKey: 'group_id'}) ;
 usermodel.belongsToMany(Groups , {through : 'Groupuser' , foreignKey : 'id'}) ;
+Groups.belongsToMany(usermodel, {
+    as: "admin",
+    through: "GroupAdmin",
+    onDelete: "CASCADE",
+  });
+
 
 app.use('/user' , userroute) ;
 app.use('/chat' , chatroute ) ;
 app.use('/group' , grouproute) ;
+
 
 
 

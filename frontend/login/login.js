@@ -8,6 +8,7 @@ async function login(e) {
         const phonenumber = document.getElementById('Phone').value ;
         const password = document.getElementById('password').value ;
         const logindetail = {
+            name ,
             phonenumber ,
             password ,
         }

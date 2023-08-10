@@ -33,9 +33,9 @@ const savedata = async(req , res , next)=>{
 
 const logindata  = async(req , res , next)=>{ 
     try {
-        const {phonenumber , password} = req.body ;
+        const {phonenumber , password , name} = req.body ;
         const reqdata = await User.findAll({where : {
-            
+             name : name ,
                 phonenumber : phonenumber
             
         }})
