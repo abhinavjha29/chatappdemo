@@ -1,5 +1,15 @@
+const socket = io('http://localhost:5000');
 const token = localStorage.getItem('token') ;
 const name = localStorage.getItem('name') ;
+socket.on('chat-message', (data) => {
+    const messageContainer = document.querySelector('.container'); // Update this selector as needed
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('message');
+    messageElement.appendChild(
+      document.createTextNode(`${data.name}: ${data.chat}`)
+    );
+    messageContainer.append(messageElement);
+  });
 
 const sendbtn = document.getElementById('sendbtn') ;
 sendbtn.addEventListener('click' , sendmsg) ;
@@ -18,7 +28,10 @@ async function sendmsg(e) {
     const res = await axios.post('http://localhost:5000/chat/savechat' ,chat_detail , {headers : {"Authorization" : token} } )
 if (res.status==200) {
     console.log("chat sent") ;
-
+    socket.emit('send-chat-message', {
+        name: name, // Sender's name
+        chat: chat, // Chat message
+      });
 }
 else throw new Error(res.data.messege)
    }

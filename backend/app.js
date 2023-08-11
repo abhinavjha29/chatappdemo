@@ -1,17 +1,23 @@
 const Express = require('express') ;
 const bodyparser = require('body-parser') ;
-const cors = require('cors') ; 
-
+const cors = require('cors') ;
+const app = Express() ;
 const userroute = require('./router/signuproute') ;
 const sequelize = require('./util/database');
 const chatroute = require('./router/chatroute') ;
 const chatmodel = require('./model/chatmodel') ;
 const usermodel = require('./model/signupdetail') ;
-//const Groupuser = require('./model/groupuser') ;
+const http = require('http'); // Require the http module
+const socketIO = require('socket.io'); // Require socket.io
+
+
+const server = http.createServer(app); // Create an HTTP server using the express app
+const io = socketIO(server); // 
+
 const Groups = require('./model/groupmodel');
 const grouproute = require('./router/grouprote') ;
 
-const app = Express() ;
+
 app.use(bodyparser.json()) ;
 app.use(cors({
     origin : '*'
@@ -33,6 +39,22 @@ app.use('/user' , userroute) ;
 app.use('/chat' , chatroute ) ;
 app.use('/group' , grouproute) ;
 
+
+const users = {}
+
+io.on('connection', socket => {
+  socket.on('new-user', name => {
+    users[socket.id] = name
+    socket.broadcast.emit('user-connected', name)
+  })
+  socket.on('send-chat-message', message => {
+    socket.broadcast.emit('chat-message', { message: message, name: users[socket.id] })
+  })
+  socket.on('disconnect', () => {
+    socket.broadcast.emit('user-disconnected', users[socket.id])
+    delete users[socket.id]
+  })
+})
 
 
 
